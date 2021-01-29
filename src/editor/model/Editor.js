@@ -73,6 +73,7 @@ export default Backbone.Model.extend({
 
   initialize(c = {}) {
     this.config = c;
+    console.log('kakaya is here');
     this.set('Config', c);
     this.set('modules', []);
     this.set('toLoad', []);
@@ -99,18 +100,21 @@ export default Backbone.Model.extend({
     toLog.forEach(e => this.listenLog(e));
 
     // Deprecations
-    [{ from: 'change:selectedComponent', to: 'component:toggled' }].forEach(
-      event => {
-        const eventFrom = event.from;
-        const eventTo = event.to;
-        this.listenTo(this, eventFrom, (...args) => {
-          this.trigger(eventTo, ...args);
-          this.logWarning(
-            `The event '${eventFrom}' is deprecated, replace it with '${eventTo}'`
-          );
-        });
+    [
+      {
+        from: 'change:selectedComponent',
+        to: 'component:toggled'
       }
-    );
+    ].forEach(event => {
+      const eventFrom = event.from;
+      const eventTo = event.to;
+      this.listenTo(this, eventFrom, (...args) => {
+        this.trigger(eventTo, ...args);
+        this.logWarning(
+          `The event '${eventFrom}' is deprecated, replace it with '${eventTo}'`
+        );
+      });
+    });
   },
 
   getContainer() {
@@ -790,15 +794,24 @@ export default Backbone.Model.extend({
   },
 
   logInfo(msg, opts) {
-    this.log(msg, { ...opts, level: 'info' });
+    this.log(msg, {
+      ...opts,
+      level: 'info'
+    });
   },
 
   logWarning(msg, opts) {
-    this.log(msg, { ...opts, level: 'warning' });
+    this.log(msg, {
+      ...opts,
+      level: 'warning'
+    });
   },
 
   logError(msg, opts) {
-    this.log(msg, { ...opts, level: 'error' });
+    this.log(msg, {
+      ...opts,
+      level: 'error'
+    });
   },
 
   initBaseColorPicker(el, opts = {}) {
