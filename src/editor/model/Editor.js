@@ -73,7 +73,6 @@ export default Backbone.Model.extend({
 
   initialize(c = {}) {
     this.config = c;
-    console.log('kakaya is here');
     this.set('Config', c);
     this.set('modules', []);
     this.set('toLoad', []);
@@ -100,21 +99,18 @@ export default Backbone.Model.extend({
     toLog.forEach(e => this.listenLog(e));
 
     // Deprecations
-    [
-      {
-        from: 'change:selectedComponent',
-        to: 'component:toggled'
+    [{ from: 'change:selectedComponent', to: 'component:toggled' }].forEach(
+      event => {
+        const eventFrom = event.from;
+        const eventTo = event.to;
+        this.listenTo(this, eventFrom, (...args) => {
+          this.trigger(eventTo, ...args);
+          this.logWarning(
+            `The event '${eventFrom}' is deprecated, replace it with '${eventTo}'`
+          );
+        });
       }
-    ].forEach(event => {
-      const eventFrom = event.from;
-      const eventTo = event.to;
-      this.listenTo(this, eventFrom, (...args) => {
-        this.trigger(eventTo, ...args);
-        this.logWarning(
-          `The event '${eventFrom}' is deprecated, replace it with '${eventTo}'`
-        );
-      });
-    });
+    );
   },
 
   getContainer() {
@@ -251,15 +247,13 @@ export default Backbone.Model.extend({
    * */
   handleUpdates(model, val, opt = {}) {
     // Component has been added temporarily - do not update storage or record changes
-    if (opt.temporary) {
+    if (opt.temporary || opt.noCount || opt.avoidStore) {
       return;
     }
 
-    timedInterval && clearInterval(timedInterval);
+    timedInterval && clearTimeout(timedInterval);
     timedInterval = setTimeout(() => {
-      if (!opt.avoidStore) {
-        this.set('changesCount', this.get('changesCount') + 1, opt);
-      }
+      this.set('changesCount', this.get('changesCount') + 1, opt);
     }, 0);
   },
 
@@ -459,14 +453,14 @@ export default Backbone.Model.extend({
   /**
    * Set style inside editor's canvas. This method overrides actual style
    * @param {Object|string} style CSS string or style model
-   * @param {Object} opt the options object to be used by the [CssRules.add]{@link rules#add} method
+   * @param {Object} opt the options object to be used by the `CssRules.add` method
    * @return {this}
    * @private
    */
   setStyle(style, opt = {}) {
-    var rules = this.get('CssComposer').getAll();
-    for (var i = 0, len = rules.length; i < len; i++) rules.pop();
-    rules.add(style, opt);
+    const cssc = this.get('CssComposer');
+    cssc.clear(opt);
+    cssc.getAll().add(style, opt);
     return this;
   },
 
@@ -494,23 +488,27 @@ export default Backbone.Model.extend({
    * @returns {String}
    */
   getState() {
-    return this.get('state');
+    return this.get('state') || '';
   },
 
   /**
    * Returns HTML built inside canvas
-   * @return {string} HTML string
+   * @param {Object} [opts={}] Options
+   * @returns {string} HTML string
    * @private
    */
-  getHtml() {
+  getHtml(opts = {}) {
     const config = this.config;
+    const { optsHtml } = config;
     const exportWrapper = config.exportWrapper;
     const wrapperIsBody = config.wrapperIsBody;
     const js = config.jsInHtml ? this.getJs() : '';
     var wrp = this.get('DomComponents').getComponent();
     var html = this.get('CodeManager').getCode(wrp, 'html', {
       exportWrapper,
-      wrapperIsBody
+      wrapperIsBody,
+      ...optsHtml,
+      ...opts
     });
     html += js ? `<script>${js}</script>` : '';
     return html;
@@ -519,11 +517,12 @@ export default Backbone.Model.extend({
   /**
    * Returns CSS built inside canvas
    * @param {Object} [opts={}] Options
-   * @return {string} CSS string
+   * @returns {string} CSS string
    * @private
    */
   getCss(opts = {}) {
     const config = this.config;
+    const { optsCss } = config;
     const wrapperIsBody = config.wrapperIsBody;
     const avoidProt = opts.avoidProtected;
     const keepUnusedStyles = !isUndefined(opts.keepUnusedStyles)
@@ -538,7 +537,8 @@ export default Backbone.Model.extend({
       this.get('CodeManager').getCode(wrp, 'css', {
         cssc,
         wrapperIsBody,
-        keepUnusedStyles
+        keepUnusedStyles,
+        ...optsCss
       })
     );
   },
@@ -794,24 +794,15 @@ export default Backbone.Model.extend({
   },
 
   logInfo(msg, opts) {
-    this.log(msg, {
-      ...opts,
-      level: 'info'
-    });
+    this.log(msg, { ...opts, level: 'info' });
   },
 
   logWarning(msg, opts) {
-    this.log(msg, {
-      ...opts,
-      level: 'warning'
-    });
+    this.log(msg, { ...opts, level: 'warning' });
   },
 
   logError(msg, opts) {
-    this.log(msg, {
-      ...opts,
-      level: 'error'
-    });
+    this.log(msg, { ...opts, level: 'error' });
   },
 
   initBaseColorPicker(el, opts = {}) {
