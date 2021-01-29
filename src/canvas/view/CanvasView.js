@@ -275,8 +275,7 @@ export default Backbone.View.extend({
     const fo = this.getFrameOffset();
     const co = this.getCanvasOffset();
     const { noScroll } = opts;
-    /*cv.scrollLeft = 0;
-    cv.scrollTop = 0;*/
+
     return {
       top: fo.top + (noScroll ? 0 : bEl.scrollTop) * zoom - co.top,
       left: fo.left + (noScroll ? 0 : bEl.scrollLeft) * zoom - co.left,
