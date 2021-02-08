@@ -164,7 +164,7 @@ export default {
 
   // Import asynchronously CSS to use as icons
   cssIcons:
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0-3/css/fontawesome.min.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/fontawesome.min.css',
 
   // Dom element
   el: '',
