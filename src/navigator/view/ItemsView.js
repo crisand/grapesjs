@@ -76,6 +76,10 @@ export default Backbone.View.extend({
    * @return Object Object created
    * */
   addToCollection(model, fragmentEl, index) {
+    //console.log("model",model)
+    if (model.attributes.tagName === 'link') {
+      return;
+    }
     const { level, parentView } = this;
     var fragment = fragmentEl || null;
     var viewObject = ItemView;
