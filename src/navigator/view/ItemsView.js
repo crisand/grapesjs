@@ -77,9 +77,7 @@ export default Backbone.View.extend({
    * */
   addToCollection(model, fragmentEl, index) {
     //console.log("model",model)
-    if (model.attributes.tagName === 'link') {
-      return;
-    }
+
     const { level, parentView } = this;
     var fragment = fragmentEl || null;
     var viewObject = ItemView;
@@ -94,7 +92,13 @@ export default Backbone.View.extend({
       opened: this.opt.opened
     });
     var rendered = view.render().el;
-
+    if (model.attributes.tagName === 'link') {
+      /* console.log("rendered", rendered)
+       rendered.style.display = "none !important";
+       rendered.style.height = "0px !important";*/
+      rendered.className = 'link-donot-show';
+      //return;
+    }
     if (fragment) {
       fragment.appendChild(rendered);
     } else {
