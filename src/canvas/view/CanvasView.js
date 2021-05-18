@@ -218,7 +218,7 @@ export default Backbone.View.extend({
     var cvsOff = this.getCanvasOffset();
     var eo = this.offset(el, opts);
     let cvv = document.querySelector('.gjs-cv-canvas');
-    var frmTop = opt.avoidFrameOffset ? 0 : frmOff.top;
+    var frmTop = opt.avoidFrameOffset ? 0 : frmOff.top + cvv.scrollTop;
     var frmLeft = opt.avoidFrameOffset ? 0 : frmOff.left + cvv.scrollLeft;
 
     const top = eo.top * zoom + frmTop - cvsOff.top;
