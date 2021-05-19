@@ -284,14 +284,14 @@ class Resizer {
         resizer
       });
     this.toggleFrames(1);
-    this.move(e);
+    this.move(e, config, el, resizer);
   }
 
   /**
    * While resizing
    * @param  {Event} e
    */
-  move(e) {
+  move(e, config, el, resizer) {
     const onMove = this.onMove;
     var mouseFetch = this.mousePosFetcher;
     var currentPos = mouseFetch
@@ -312,11 +312,11 @@ class Resizer {
       alt: e.altKey
     };
 
-    this.rectDim = this.calc(this);
+    this.rectDim = this.calc(this, config, el, resizer);
     this.updateRect(0);
 
     // Move callback
-    onMove && onMove(e);
+    onMove && onMove(e, config, el, resizer);
 
     // In case the mouse button was released outside of the window
     if (e.which === 0) {
@@ -442,13 +442,17 @@ class Resizer {
    * All positioning logic
    * @return {Object}
    */
-  calc(data) {
+  calc(data, config, el, resizer) {
     let value;
     let cv = document.querySelector('.gjs-cv-canvas__frames');
     var scale =
       Math.ceil((cv.getBoundingClientRect().width / cv.offsetWidth) * 100) /
       100;
-    console.log('scale', scale);
+    //console.log('scale', scale, config, el, resizer);
+    if (resizer) {
+      this.handlerAttr = resizer.handlerAttr;
+    }
+    console.log('this.handlerAttr', this.handlerAttr);
     const opts = this.opts || {};
     const step = opts.step;
     const startDim = this.startDim;
