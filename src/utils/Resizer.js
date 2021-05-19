@@ -246,6 +246,7 @@ class Resizer {
     if (e.button !== 0) return;
     e.preventDefault();
     e.stopPropagation();
+
     const el = this.el;
     const resizer = this;
     const config = this.opts || {};
@@ -444,7 +445,10 @@ class Resizer {
   calc(data) {
     let value;
     let cv = document.querySelector('.gjs-cv-canvas__frames');
-    var scale = cv.getBoundingClientRect().width / cv.offsetWidth;
+    var scale =
+      Math.ceil((cv.getBoundingClientRect().width / cv.offsetWidth) * 100) /
+      100;
+    console.log('scale', scale);
     const opts = this.opts || {};
     const step = opts.step;
     const startDim = this.startDim;
@@ -507,8 +511,8 @@ class Resizer {
       box.t = startDim.h - box.h;
     }
 
-    box.h = startH / scale + box.h / scale;
-    box.w = startW / scale + box.w / scale;
+    box.h = startH - startH / scale + box.h / scale;
+    box.w = startW - startW / scale + box.w / scale;
 
     return box;
   }
