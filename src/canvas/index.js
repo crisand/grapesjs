@@ -98,7 +98,7 @@ export default () => {
 
     /**
      * Add wrapper
-     * @param	{Object}	wrp Wrapper
+     * @param  {Object}  wrp Wrapper
      * @private
      * */
     setWrapper(wrp) {
@@ -488,6 +488,7 @@ export default () => {
      * @private
      */
     getMouseRelativePos(e, options) {
+      var zoom = canvas.get('zoom') / 100;
       var opts = options || {};
       var addTop = 0;
       var addLeft = 0;
@@ -496,16 +497,18 @@ export default () => {
       var win = doc.defaultView || doc.parentWindow;
       var frame = win.frameElement;
       var yOffset = subWinOffset ? win.pageYOffset : 0;
+
       var xOffset = subWinOffset ? win.pageXOffset : 0;
 
       if (frame) {
         var frameRect = frame.getBoundingClientRect();
         addTop = frameRect.top || 0;
         addLeft = frameRect.left || 0;
+        //console.log("height", frame.clientHeight)
       }
-
+      var py = e.clientY + addTop - yOffset;
       return {
-        y: e.clientY + addTop - yOffset,
+        y: py,
         x: e.clientX + addLeft - xOffset
       };
     },
@@ -646,7 +649,7 @@ export default () => {
      * @returns {Frame}
      * @example
      *
-        editor.Canvas.addFrame({
+     editor.Canvas.addFrame({
           name: 'Mobile home page',
           x: 100, // Position in canvas
           y: 100,

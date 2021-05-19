@@ -46,7 +46,7 @@ export default {
    */
   init(config = {}) {
     const els = config.container;
-    //console.log("init from gps")
+    console.log('init from Grapesjs!');
     if (!els) throw new Error("'container' is required");
     config = {
       ...defaultConfig,

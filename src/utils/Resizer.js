@@ -276,7 +276,12 @@ class Resizer {
     on(doc, 'keydown', this.handleKeyDown);
     on(doc, 'mouseup', this.stop);
     isFunction(this.onStart) &&
-      this.onStart(e, { docs: doc, config, el, resizer });
+      this.onStart(e, {
+        docs: doc,
+        config,
+        el,
+        resizer
+      });
     this.toggleFrames(1);
     this.move(e);
   }
@@ -330,7 +335,11 @@ class Resizer {
     off(doc, 'mouseup', this.stop);
     this.updateRect(1);
     this.toggleFrames();
-    isFunction(this.onEnd) && this.onEnd(e, { docs: doc, config });
+    isFunction(this.onEnd) &&
+      this.onEnd(e, {
+        docs: doc,
+        config
+      });
   }
 
   /**
@@ -434,6 +443,8 @@ class Resizer {
    */
   calc(data) {
     let value;
+    let cv = document.querySelector('.gjs-cv-canvas__frames');
+    var scale = cv.getBoundingClientRect().width / cv.offsetWidth;
     const opts = this.opts || {};
     const step = opts.step;
     const startDim = this.startDim;
@@ -495,6 +506,9 @@ class Resizer {
     if (~attr.indexOf('t')) {
       box.t = startDim.h - box.h;
     }
+
+    box.h = startH / scale + box.h / scale;
+    box.w = startW / scale + box.w / scale;
 
     return box;
   }
