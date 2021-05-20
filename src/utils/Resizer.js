@@ -516,12 +516,12 @@ class Resizer {
     }
 
     if (~attr.indexOf('l')) {
-      box.l = this.startDim.offsetLeft + startDim.w - box.w;
+      box.l = this.startDim.offsetLeft + (startDim.w - box.w) / scale;
     } else {
       box.l = this.startDim.offsetLeft;
     }
     if (~attr.indexOf('t')) {
-      box.t = this.startDim.offsetTop + (startDim.h - box.h);
+      box.t = this.startDim.offsetTop + (startDim.h - box.h) / scale;
     } else {
       box.t = this.startDim.offsetTop;
     }
