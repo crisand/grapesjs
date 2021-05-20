@@ -254,11 +254,14 @@ class Resizer {
     var rect = this.getElementPos(el, { target: 'el' });
     this.handlerAttr = e.target.getAttribute(attrName);
     this.clickedHandler = e.target;
+
     this.startDim = {
       t: rect.top,
       l: rect.left,
       w: rect.width,
-      h: rect.height
+      h: rect.height,
+      offsetTop: el.offsetTop,
+      offsetLeft: el.offsetLeft
     };
     this.rectDim = {
       t: rect.top,
@@ -306,6 +309,7 @@ class Resizer {
       x: currentPos.x - this.startPos.x,
       y: currentPos.y - this.startPos.y
     };
+
     this.keys = {
       shift: e.shiftKey,
       ctrl: e.ctrlKey,
@@ -357,6 +361,7 @@ class Resizer {
 
     // Use custom updating strategy if requested
     if (isFunction(updateTarget)) {
+      //console.log("rect", rect)
       updateTarget(el, rect, {
         store,
         selectedHandler,
@@ -365,6 +370,7 @@ class Resizer {
       });
     } else {
       const elStyle = el.style;
+
       elStyle[keyWidth] = rect.w + unitWidth;
       elStyle[keyHeight] = rect.h + unitHeight;
     }
@@ -452,7 +458,7 @@ class Resizer {
     if (resizer) {
       this.handlerAttr = resizer.handlerAttr;
     }
-    console.log('this.handlerAttr', this.handlerAttr);
+
     const opts = this.opts || {};
     const step = opts.step;
     const startDim = this.startDim;
@@ -462,6 +468,7 @@ class Resizer {
     const deltaY = data.delta.y;
     const startW = startDim.w;
     const startH = startDim.h;
+    //console.log('this.handlerAttr', this.handlerAttr, this.startDim, step, deltaY, data);
     var box = {
       t: 0,
       l: 0,
@@ -509,10 +516,14 @@ class Resizer {
     }
 
     if (~attr.indexOf('l')) {
-      box.l = startDim.w - box.w;
+      box.l = this.startDim.offsetLeft + startDim.w - box.w;
+    } else {
+      box.l = this.startDim.offsetLeft;
     }
     if (~attr.indexOf('t')) {
-      box.t = startDim.h - box.h;
+      box.t = this.startDim.offsetTop + (startDim.h - box.h);
+    } else {
+      box.t = this.startDim.offsetTop;
     }
 
     box.h = startH - startH / scale + box.h / scale;

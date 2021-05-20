@@ -78,7 +78,10 @@ export default {
     const listenToEl = em.getConfig('listenToEl');
     const { parentNode } = em.getContainer();
     const method = enable ? 'on' : 'off';
-    const methods = { on, off };
+    const methods = {
+      on,
+      off
+    };
     !listenToEl.length && parentNode && listenToEl.push(parentNode);
     const trigger = (win, body) => {
       methods[method](body, 'mouseover', this.onHover);
@@ -153,7 +156,12 @@ export default {
       component.views.forEach(view => {
         const el = view.el;
         const pos = this.getElementPos(el);
-        result = { el, pos, component, view: getViewEl(el) };
+        result = {
+          el,
+          pos,
+          component,
+          view: getViewEl(el)
+        };
         this.updateToolsLocal(result);
 
         if (el.ownerDocument === this.currentDoc) this.elHovered = result;
@@ -186,7 +194,12 @@ export default {
 
     if (el && isVisible(el)) {
       const pos = this.getElementPos(el);
-      result = { el, pos, component, view: getViewEl(el) };
+      result = {
+        el,
+        pos,
+        component,
+        view: getViewEl(el)
+      };
     }
 
     this.elSelected = result;
@@ -324,7 +337,10 @@ export default {
    */
   select(model, event = {}) {
     if (!model) return;
-    this.editor.select(model, { scroll: {}, event });
+    this.editor.select(model, {
+      scroll: {},
+      event
+    });
     this.initResize(model);
   },
 
@@ -485,8 +501,15 @@ export default {
           if (!onlyWidth) {
             style[keyHeight] = autoHeight ? 'auto' : `${rect.h}${unitHeight}`;
           }
-
-          modelToStyle.addStyle({ ...style, en }, { avoidStore: !store });
+          style['top'] = rect.t;
+          style['left'] = rect.l;
+          modelToStyle.addStyle(
+            {
+              ...style,
+              en
+            },
+            { avoidStore: !store }
+          );
           const updateEvent = `update:component:style`;
           const eventToListen = `${updateEvent}:${keyHeight} ${updateEvent}:${keyWidth}`;
           em && em.trigger(eventToListen, null, null, { noEmit: 1 });
@@ -497,7 +520,11 @@ export default {
         options = { ...options, ...resizable };
       }
 
-      this.resizer = editor.runCommand('resize', { el, options, force: 1 });
+      this.resizer = editor.runCommand('resize', {
+        el,
+        options,
+        force: 1
+      });
     } else {
       editor.stopCommand('resize');
       this.resizer = null;
@@ -666,7 +693,10 @@ export default {
     style.width = pos.width + unit;
     style.height = pos.height + unit;
 
-    this.updateToolbarPos({ top: targetToElem.top, left: targetToElem.left });
+    this.updateToolbarPos({
+      top: targetToElem.top,
+      left: targetToElem.left
+    });
   },
 
   /**
