@@ -514,7 +514,10 @@ class Resizer {
         box.w = Math.round(box.h * ratio);
       }
     }
-
+    startDim.w = startDim.w || 0;
+    startDim.h = startDim.h || 0;
+    box.w = box.w || 0;
+    box.h = box.h || 0;
     if (~attr.indexOf('l')) {
       box.l = this.startDim.offsetLeft + (startDim.w - box.w) / scale;
     } else {
