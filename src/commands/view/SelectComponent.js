@@ -501,8 +501,8 @@ export default {
           if (!onlyWidth) {
             style[keyHeight] = autoHeight ? 'auto' : `${rect.h}${unitHeight}`;
           }
-          style['top'] = rect.t;
-          style['left'] = rect.l;
+          style['top'] = rect.t + 'px';
+          style['left'] = rect.l + 'px';
           modelToStyle.addStyle(
             {
               ...style,
